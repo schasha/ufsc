@@ -14,7 +14,7 @@ bool verificaChaves(std::string trecho_programa) {
             pilha.push('{');
         }
         if (caracter == '}') {
-            if (pilha.empty() || pilha.top() == '}') {
+            if (pilha.empty()) {
                 resposta = false;
                 break;
             }
