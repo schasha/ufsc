@@ -44,8 +44,6 @@ class ArrayStack {
 
 }  // namespace structures
 
-#endif
-
 
 template<typename T>
 structures::ArrayStack<T>::ArrayStack() {
@@ -125,4 +123,6 @@ bool structures::ArrayStack<T>::full() {
         return false;
     }
 }
+
+#endif
 
