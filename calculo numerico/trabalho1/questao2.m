@@ -45,4 +45,22 @@ for i=n2+1: n3-1
     B(i, 1)   = 5;
 end
 
+%2.1.b)
+
+A_expandida = [A B];
+
+x = fgauss(50, A_expandida);
+
+residuo = [A*x - B];
+residuo_max = max(residuo)
+
+%2.1.c)
+
+N = 50
+operacoes_realizadas = (4*(N^3) + 9*(N^2) - N - 6)/6
+
+%2.2.a)
+
+
+
 endfunction 
