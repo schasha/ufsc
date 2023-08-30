@@ -56,11 +56,25 @@ residuo_max = max(residuo)
 
 %2.1.c)
 
-N = 50
-operacoes_realizadas = (4*(N^3) + 9*(N^2) - N - 6)/6
+n = n3;
+operacoes_realizadas = (4*(n^3) + 9*(n^2) - n - 6)/6
 
 %2.2.a)
 
+for i=1:n
+    A;
+end
 
+%2.2.b)
+
+[y, operacoes] = fgauss_seidel(A, B);
+transpose(y)
+
+residuo = [A*y - B];
+residuo_max = max(residuo)
+
+%2.2.c)
+
+operacoes
 
 endfunction 
