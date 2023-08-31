@@ -6,6 +6,7 @@ A = zeros(50);
 B = zeros(50, 1);
 
 n1=15; n2=25; n3=50;
+n = n3;
 
 %i=1
     A(1, 1) = 3;
@@ -49,25 +50,62 @@ end
 
 A_expandida = [A B];
 
-x = fgauss(50, A_expandida);
+x = fgauss(n, A_expandida);
+
+printf("Solucao pelo metodo direto:\n")
+transpose(x)
 
 residuo = [A*x - B];
 residuo_max = max(residuo)
 
 %2.1.c)
 
-n = n3;
 operacoes_realizadas = (4*(n^3) + 9*(n^2) - n - 6)/6
+printf("\n")
 
 %2.2.a)
 
-for i=1:n
-    A;
+printf("Teste de convergencia\n")
+c = true;
+
+for (i = 1:n)
+    soma = 0;
+    for j=1:n
+        soma = soma + abs(A(i, j));
+    end
+    v = abs(A(i,i));
+    soma = soma - v;
+
+    if (v > soma)
+        cond_b = true;
+        printf("|%d| > |%d| V \n", A(i,i), soma)
+
+    elseif (v >= soma)
+        printf("|%d| >= |%d| V \n", A(i,i), soma)
+
+    else
+        c = false;
+        printf("|%d| >= |%d| F \n", A(i,i), soma)
+    end
+
 end
+
+if c == 1
+    if (cond_b == 1)
+        printf("Sistema convergente, pois possui diagonal dominante ")
+        printf("ou seja, para todo A(i,i) vale que A(i,i) >= Zi (i = 1, ... , n) ")
+        printf("e ainda, para pelo menos um A(i,i) vale A(i,i) > Zi (i = 1, ..., n)\n")
+    else
+    	printf("Sistema nao convergente, nao possui diagonal dominante\n")
+    end
+end
+printf("\n")
 
 %2.2.b)
 
 [y, operacoes] = fgauss_seidel(A, B);
+
+printf("Solucao pelo metodo iterativo:\n")
 transpose(y)
 
 residuo = [A*y - B];

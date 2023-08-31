@@ -27,7 +27,7 @@ function [X, operacoes] = fgauss_seidel(A, B)
     k = 0;
     operacoes = 0;
     lambda = 1.01; % Fator de relaxacao otimo para este exemplo
-    while diferenca > 1e-10 && k < 100
+    while diferenca > 1e-6 && k < 100
         k = k + 1;
         X_anterior = X;
         for i=1:n
@@ -37,7 +37,7 @@ function [X, operacoes] = fgauss_seidel(A, B)
             % _A =A(i, NN(i,c))
             % _x =x(NN(i,c),1)
             X(i) = (1-lambda)*X_anterior(i)+lambda*(B(i,1) - sum(A(i, NN(i,c))*X(NN(i,c),1)))/A(i,i);
-            operacoes++;
+            operacoes += 8;
         end
         diferenca = max(abs(X - X_anterior));
     end
