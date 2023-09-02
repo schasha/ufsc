@@ -65,7 +65,9 @@ int main()
     printf("\nArray in descending order: ");
     sort(arr, size, sortDescending);
     printArray(arr, size);
+    printf("\n");
 
+    free(arr);
 
     return 0;
 }

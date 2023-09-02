@@ -21,25 +21,24 @@
 // - pai deve esperar pelos filhos antes de terminar!
 
 
-//int main(int argc, char** argv) {
-int main(void) {
-    pid_t pid = fork();
+int main(int argc, char** argv) {
+    pid_t pid;
 
-    if (pid) { 
-        printf("Processo pai criou %d\n", pid);
+    for (int i = 0; i < 2; i++) {
         pid = fork();
-        if (pid) {
-            printf("Processo pai criou %d\n", pid);
+
+        if (pid == 0) {
+            printf("Processo %d criado!\n", getpid());
+            fflush(stdout);
+            exit(0);
         }
+
+        printf("Processo pai criou %d\n", pid);
+        fflush(stdout);
     }
 
-    if (pid) {
-        printf("Processo pai finalizado!\n");
-    }
-
-    if (pid == 0) {
-        printf("Processo filho %d criado\n", getpid());
-    }
-
+    while(wait(NULL) >= 0);
+    printf("Processo pai finalizado\n");
+    
     return 0;
 }

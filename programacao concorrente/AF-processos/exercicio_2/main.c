@@ -1,5 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 //                          (principal)
 //                               |
@@ -19,18 +22,53 @@
 // Obs:
 // - netos devem esperar 5 segundos antes de imprmir a mensagem de finalizado (e terminar)
 // - pais devem esperar pelos seu descendentes diretos antes de terminar
+void createChild(void);
+void createGrandchild(void);
 
 int main(int argc, char** argv) {
+    for (int i = 0; i < 2; i++) {
+        createChild();
+    }
 
-    // ....
-
-    /*************************************************
-     * Dicas:                                        *
-     * 1. Leia as intruções antes do main().         *
-     * 2. Faça os prints exatamente como solicitado. *
-     * 3. Espere o término dos filhos                *
-     *************************************************/
+    while(wait(NULL) >= 0);
 
     printf("Processo principal %d finalizado\n", getpid());    
+    fflush(stdout);
     return 0;
+}
+
+
+void createChild(void) {
+    pid_t pid = fork();
+        
+    if (pid == 0) {
+        printf("Processo %d, filho de %d\n", getpid(), getppid());
+        fflush(stdout);
+        
+        for (int i = 0; i < 3; i++) {
+            createGrandchild();
+        }
+
+        while(wait(NULL) >= 0);
+
+        printf("Processo %d finalizado\n", getpid());
+        fflush(stdout);
+
+        exit(0);
+    } 
+}
+
+void createGrandchild(void) {
+    pid_t pid = fork();
+    
+    if (pid == 0) {
+        printf("Processo %d, filho de %d\n", getpid(), getppid());
+        fflush(stdout);
+
+        sleep(5);
+        printf("Processo %d finalizado\n", getpid());
+        fflush(stdout);
+
+        exit(0);
+    }
 }

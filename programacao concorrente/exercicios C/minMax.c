@@ -8,23 +8,21 @@ typedef struct MinMax
 } MinMax;
 
 MinMax *getMinMax(int * array, const int SIZE) {
-    MinMax minmax;
-    MinMax *pminmax = (MinMax*) malloc(sizeof(MinMax));
-    pminmax = &minmax;
+    MinMax* minmax = (MinMax*) malloc(sizeof(MinMax));
 
-    minmax.min = array[0];
-    minmax.max = array[0];
+    minmax->min = array[0];
+    minmax->max = array[0];
     
     for (int i = 1; i < SIZE; i++) {
-        if (array[i] > minmax.max) {
-            minmax.max = array[i];
+        if (array[i] > minmax->max) {
+            minmax->max = array[i];
         }
 
-        if (array[i] < minmax.min) {
-            minmax.min = array[i];
+        if (array[i] < minmax->min) {
+            minmax->min = array[i];
         }
     }
-    return pminmax;
+    return minmax;
 }
 
 
@@ -35,6 +33,8 @@ int main(void) {
     minmax = getMinMax(array, 10);
 
     printf("%d, %d\n", minmax->min, minmax->max);
+
+    free(minmax);
 
     return 0;
 }
