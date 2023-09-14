@@ -28,9 +28,8 @@ typedef struct {
     double* c;
     int n_threads;
     int size;
-    int n_loops;
-    int i;
-}vecs;
+    int thread_number;
+}vecInfo;
 
 
 int main(int argc, char* argv[]) {
@@ -79,30 +78,22 @@ int main(int argc, char* argv[]) {
     double* c = malloc(a_size*sizeof(double));
 
     //
-    if (n_threads > a_size) {
-        n_threads = a_size;
-    }
+    if (n_threads > a_size) n_threads = a_size;
+    vecInfo vectors = {a, b, c, n_threads, a_size, 0};
 
-    vecs vectors = {a, b, c, n_threads, a_size, a_size/n_threads, 0};
-
-    if (a_size % n_threads) vectors.n_loops++;
-
-    printf("%d\n", vectors.n_loops);
-
+    //threads
     pthread_t threads[n_threads];
     for (int i = 0; i < n_threads; i++) {
         pthread_create(&threads[i], NULL, addI, (void*)&vectors);
-        printf("thread criada %d\n", i);
     }
-
     for (int i = 0; i < n_threads; i++) {
         pthread_join(threads[i], NULL);
     }
+
     //    +---------------------------------+
     // ** | IMPORTANTE: avalia o resultado! | **
     //    +---------------------------------+
     avaliar(a, b, c, a_size);
-    
 
     //Importante: libera memória
     free(a);
@@ -112,19 +103,19 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-void* addI(void* vectors){
-    vecs* tmp = ((vecs *)vectors);
-    //int start = tmp->n_loops * tmp->i;
-    tmp->i++;
-    int tmp_i = tmp->i;
+void* addI(void* arg){
+    vecInfo* vectors = ((vecInfo *)arg);
 
-    //for (int i = start; i < start + tmp->n_loops; i++) {
-    for (int i = 0; i < tmp->n_loops; i++) {
-        int target = tmp_i -1 + i*tmp->n_threads;
-        printf("%d, %d\n", i, target);
-        if (target >= tmp->size) pthread_exit(NULL);
+    vectors->thread_number++; //starting at 1
 
-        tmp->c[target] = tmp->a[target] + tmp->b[target];
+    int n_loops = vectors->size/vectors->n_threads;
+    if (vectors->size % vectors->n_threads) n_loops++;
+
+    for (int i = 0; i < n_loops; i++) {
+        int target = i*vectors->n_threads + vectors->thread_number - 1; //counts by n_threads's n_loops times + thread_number offset
+        if (target >= vectors->size) pthread_exit(NULL);
+
+        vectors->c[target] = vectors->a[target] + vectors->b[target];
     }
     pthread_exit(NULL);
 }

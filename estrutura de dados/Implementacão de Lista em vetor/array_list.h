@@ -206,7 +206,7 @@ void structures::ArrayList<T>::remove(const T& data) {
     }
 
     for (int i = 0; i < static_cast<int>(size_ - index) - 1; i++) {
-        contents[index + i] = contents[size_ + i + 1];
+        contents[index + i] = contents[index + i + 1];
     }
     size_--;
 }
