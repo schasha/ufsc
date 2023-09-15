@@ -106,16 +106,16 @@ int main(int argc, char* argv[]) {
 void* addI(void* arg){
     vecInfo* vectors = ((vecInfo *)arg);
 
-    vectors->thread_number++; //starting at 1
+    int tmp_thread_number = vectors->thread_number++; //assigns to tmp then adds
 
     int n_loops = vectors->size/vectors->n_threads;
     if (vectors->size % vectors->n_threads) n_loops++;
 
     for (int i = 0; i < n_loops; i++) {
-        int target = i*vectors->n_threads + vectors->thread_number - 1; //counts by n_threads's n_loops times + thread_number offset
+        int target = i*vectors->n_threads + tmp_thread_number; //counts by n_threads's n_loops times + thread_number offset
         if (target >= vectors->size) pthread_exit(NULL);
 
         vectors->c[target] = vectors->a[target] + vectors->b[target];
     }
     pthread_exit(NULL);
-}
+} 

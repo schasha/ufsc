@@ -15,10 +15,22 @@
 // v                                       v
 double* load_vector(const char* filename, int* out_size);
 
-
 // Avalia se o prod_escalar é o produto escalar dos vetores a e b. Assume-se
 // que ambos a e b sejam vetores de tamanho size.
 void avaliar(double* a, double* b, int size, double prod_escalar);
+
+void* dotProductI(void*);
+
+typedef struct {
+    double* a;
+    double* b;
+    double* results;
+    int n_loops;
+    int n_threads;
+    int size;
+    int thread_number;
+}vecInfo;
+
 
 int main(int argc, char* argv[]) {
     srand(time(NULL));
@@ -59,11 +71,27 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    //Calcula produto escalar. Paralelize essa parte
-    double result = 0;
-    for (int i = 0; i < a_size; ++i) 
-        result += a[i] * b[i];
-    
+    //Calcula produto escalar
+    int n_loops = a_size/n_threads;
+    if (a_size % n_threads) n_loops++;
+
+    double* results = (double*) malloc(sizeof(double)*n_threads); //Parcela de cada thread
+    vecInfo vectors = {a, b, results, n_loops, n_threads, a_size, 0};
+
+    //threads
+    pthread_t threads[n_threads];
+    for (int i = 0; i < n_threads; i++) {
+        pthread_create(&threads[i], NULL, dotProductI, (void*)&vectors);
+    }
+    for (int i = 0; i < n_threads; i++) {
+        pthread_join(threads[i], NULL);
+    }
+     
+    double result;
+    for (int i = 0; i < n_threads; i++) { 
+        result += results[i];
+    }
+
     //    +---------------------------------+
     // ** | IMPORTANTE: avalia o resultado! | **
     //    +---------------------------------+
@@ -72,6 +100,27 @@ int main(int argc, char* argv[]) {
     //Libera memória
     free(a);
     free(b);
+    free(results);
 
     return 0;
 }
+
+void* dotProductI(void* arg){
+    vecInfo* vectors = ((vecInfo *)arg);
+
+    int tmp_thread_number = vectors->thread_number++; //assigns to tmp then adds
+    double result; 
+
+    for (int i = 0; i < vectors->n_loops; i++) {
+        int target = i*vectors->n_threads + tmp_thread_number; //counts by n_threads's n_loops times + thread_number offset
+        if (target >= vectors->size) {
+            vectors->results[tmp_thread_number] = result;
+            pthread_exit(NULL);
+        }
+
+        result += vectors->a[target] * vectors->b[target];
+    }
+    vectors->results[tmp_thread_number] = result;
+
+    pthread_exit(NULL);
+} 
