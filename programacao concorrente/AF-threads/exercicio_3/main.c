@@ -76,12 +76,14 @@ int main(int argc, char* argv[]) {
     if (a_size % n_threads) n_loops++;
 
     double* results = (double*) malloc(sizeof(double)*n_threads); //Parcela de cada thread
-    vecInfo vectors = {a, b, results, n_loops, n_threads, a_size, 0};
+    vecInfo vectors_array[n_threads];
 
     //threads
     pthread_t threads[n_threads];
     for (int i = 0; i < n_threads; i++) {
-        pthread_create(&threads[i], NULL, dotProductI, (void*)&vectors);
+        vecInfo tmp = {a, b, results, n_loops, n_threads, a_size, i};
+        vectors_array[i] = tmp;
+        pthread_create(&threads[i], NULL, dotProductI, (void*)&vectors_array[i]);
     }
     for (int i = 0; i < n_threads; i++) {
         pthread_join(threads[i], NULL);
@@ -108,19 +110,18 @@ int main(int argc, char* argv[]) {
 void* dotProductI(void* arg){
     vecInfo* vectors = ((vecInfo *)arg);
 
-    int tmp_thread_number = vectors->thread_number++; //assigns to tmp then adds
     double result; 
 
     for (int i = 0; i < vectors->n_loops; i++) {
-        int target = i*vectors->n_threads + tmp_thread_number; //counts by n_threads's n_loops times + thread_number offset
+        int target = i*vectors->n_threads + vectors->thread_number; //counts by n_threads's n_loops times + thread_number offset
         if (target >= vectors->size) {
-            vectors->results[tmp_thread_number] = result;
+            vectors->results[vectors->thread_number] = result;
             pthread_exit(NULL);
         }
 
         result += vectors->a[target] * vectors->b[target];
     }
-    vectors->results[tmp_thread_number] = result;
+    vectors->results[vectors->thread_number] = result;
 
     pthread_exit(NULL);
 } 
