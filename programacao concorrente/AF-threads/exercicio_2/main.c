@@ -79,12 +79,14 @@ int main(int argc, char* argv[]) {
 
     //
     if (n_threads > a_size) n_threads = a_size;
-    vecInfo vectors = {a, b, c, n_threads, a_size, 0};
+    vecInfo vectors_array[n_threads];
 
     //threads
     pthread_t threads[n_threads];
     for (int i = 0; i < n_threads; i++) {
-        pthread_create(&threads[i], NULL, addI, (void*)&vectors);
+        vecInfo tmp = {a, b, c, n_threads, a_size, i};
+        vectors_array[i] = tmp;
+        pthread_create(&threads[i], NULL, addI, (void*)&vectors_array[i]);
     }
     for (int i = 0; i < n_threads; i++) {
         pthread_join(threads[i], NULL);
@@ -106,16 +108,15 @@ int main(int argc, char* argv[]) {
 void* addI(void* arg){
     vecInfo* vectors = ((vecInfo *)arg);
 
-    int tmp_thread_number = vectors->thread_number++; //assigns to tmp then adds
-
     int n_loops = vectors->size/vectors->n_threads;
     if (vectors->size % vectors->n_threads) n_loops++;
 
     for (int i = 0; i < n_loops; i++) {
-        int target = i*vectors->n_threads + tmp_thread_number; //counts by n_threads's n_loops times + thread_number offset
+        int target = i*vectors->n_threads + vectors->thread_number; //counts by n_threads's n_loops times + thread_number offset
         if (target >= vectors->size) pthread_exit(NULL);
 
         vectors->c[target] = vectors->a[target] + vectors->b[target];
     }
     pthread_exit(NULL);
 } 
+
