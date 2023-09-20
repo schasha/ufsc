@@ -94,83 +94,189 @@ class LinkedList {
 };
 
 template<typename T>
-LinkedList<T>::LinkedList() {
-
-}
+LinkedList<T>::LinkedList(){}
 
 template<typename T>
 LinkedList<T>::~LinkedList() {
-
+    clear();
 }
 
 template<typename T>
 void LinkedList<T>::clear() {
-
+    while (size() > 0) {
+        pop_front();
+    }
 }
 
 template<typename T>
 void LinkedList<T>::push_back(const T& data) {
-
+    Node* tail = end();
+    Node* new_tail = new Node(data, nullptr);
+    tail->next(new_tail);
+    size_++;
 }
 
 template<typename T>
 void LinkedList<T>::push_front(const T& data) {
-
+   Node* new_first = new Node(data, head->next());
+   head->next(new_first);
+   size_++;
 }
 
 template<typename T>
 void LinkedList<T>::insert(const T& data, std::size_t index) {
+    Node* it = head->next(); //next pos
+    Node* previous;
 
+    if (index) {
+        for (int i = 0; i < index; i++) {
+            previous = it;
+            it = it->next();
+        }
+        Node* new_node = new Node(data, it);
+        previous->next(new_node);
+        size_ ++;
+    }
+
+    if (!index) {
+        push_front(data);
+    }
 }
 
 template<typename T>
 void LinkedList<T>::insert_sorted(const T& data) {
+    if (empty()) push_front(data);
 
+    if (!empty()) {
+        bool maior = false;
+        std::size_t index;
+        Node* it = head->next();
+
+        for (int i = 0; i < static_cast<int>(size_); i++) {
+            if (it->data() >= data) {
+                index = i;
+                maior = true;
+                break;
+            }
+            it = it->next();
+        }
+
+        if (maior) {
+            insert(data, index);
+        }
+        if (!maior) {
+            push_back(data);
+        }
+    }
 }
 
 template<typename T>
 T& LinkedList<T>::at(std::size_t index) {
-
+    Node* it = head->next();
+    for (int i = 0; i < index; i++) {
+        it = it->next();
+    }
+    return it->data();
 }
 
 template<typename T>
 T LinkedList<T>::pop(std::size_t index) {
+    Node* popped = head->next();
+    Node* previous;
+    T popped_value;
 
+    if (index) {
+        for (int i = 0; i < index; i++) {
+            previous = popped;
+            popped = popped->next();
+        }
+        popped_value = popped->data();
+        previous->next(popped->next());
+        delete popped;
+        size_ --;
+    }
+
+    if (!index) {
+        popped_value = pop_front();
+    }
+    return popped_value;
 }
 
 template<typename T>
 T LinkedList<T>::pop_back() {
+    Node* new_end;
+    Node* popped = head->next();
+    for (int i = 0; i < size(); i++) {
+        new_end = popped;
+        popped = popped->next();
+    }
 
+    new_end->next(nullptr);
+
+    T popped_value = popped->data();
+    delete popped;
+    size_--;
+
+    return popped_value;
 }
 
 template<typename T>
 T LinkedList<T>::pop_front() {
+    Node* popped = head->next();
+    head->next(popped->next());
 
+    T popped_value = popped->data();
+    delete popped;
+    size_--;
+
+    return popped_value;
 }
 
 template<typename T>
 void LinkedList<T>::remove(const T& data) {
+    Node* it = head->next();
+    Node* previous;
 
+    for (int i = 0; i < size(); i++) {
+        if (data == it->data()) {
+            previous->next(it->next());
+            delete it;
+            break;
+        }
+        previous = it;
+        it = it->next();
+    }
+    size_ --;
 }
 
 template<typename T>
 bool LinkedList<T>::empty() const {
-
+    return !bool(size_);
 }
 
 template<typename T>
 bool LinkedList<T>::contains(const T& data) const {
-
+    Node* it = head->next();
+    for (int i = 0; i < size(); i++) {
+        if (it->data() == data) return true;
+        it = it->next();
+    }
+    return false;
 }
 
 template<typename T>
 std::size_t LinkedList<T>::find(const T& data) const {
-
+    Node* it = head->next();
+    for (int i = 0; i < size(); i++) {
+        if (it->data() == data) return i;
+        it = it->next();
+    }
+    return(size());
 }
 
 template<typename T>
 std::size_t LinkedList<T>::size() const {
-
+    return size_;
 }
 
 }  // namespace structures
