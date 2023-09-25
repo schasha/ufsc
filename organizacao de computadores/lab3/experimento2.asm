@@ -8,17 +8,17 @@ main: # inicialização
 la $s6, _save
 lw $s5, _k
 add $s3, $zero, $zero
-lw $s3, 4($s6)
+lw $s1, 4($s6)
 
 Loop: 
 # verificação de limite do arranjo
 sltu $t1, $s3, $s1
-bne $t1, $zero, IndexOutOfBounds
+beq $t1, $zero, IndexOutOfBounds
 
 # corpo do laço
 sll $t1, $s3, 2    
 add $t1, $t1, $s6 
-lw $t0, 2($t1)
+lw $t0, 8($t1)
 bne $t0, $s5, Exit    
 addi $s3, $s3, 1      
 j Loop
