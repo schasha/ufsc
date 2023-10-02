@@ -1,8 +1,6 @@
 function x = fnewton3Matrix(xi, f1, f2, f3)
     k = 0;
     delta_x = [1e-10; 1e-10; 1e-10];
-    % xi = [1; -1; 1]; % Valor inicial real (nao convergiu)
-    % xi = [complex(1,1); complex(1,1); complex(1,1)]
     while max(abs(delta_x)) > 1e-14 && k < 100
         k = k + 1;
         %Jacobiano
