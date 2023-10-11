@@ -52,19 +52,32 @@ class BinaryTree {
         }
         bool remove(const T& data_) {
             if (data_ == data) {
-                return true;
-            }
-            if (data_ < data) {
-                if (left->remove(data_)) {
-                    delete left;
-                    left = nullptr;
+                if (left != nullptr && right != nullptr) {
+                    Node *n = right;
+                    while (n->left != nullptr) {
+                        n = n->left;
+                    }
+                    data = n->data;
+                    return right->remove(data);
+
+                } else if (right != nullptr) {
+                    data = right->data;
+                    return right->remove(data);
+
+                } else if (left != nullptr) {
+                    data = left->data;
+                    return left->remove(data);
+
+                } else {
+                    delete this;
+                    return true;
                 }
             }
-            if (data_ > data) {
-                if (right->remove(data_)) {
-                    delete right;
-                    right = nullptr;
-                }
+            if (left != nullptr && data_ < data) {
+                return left->remove(data_);
+            }
+            if (right != nullptr && data_ < data) {
+                return left->remove(data_);
             }
             return false;
         }
@@ -73,33 +86,41 @@ class BinaryTree {
             if (data_ == data) {
                 return true;
             }
-            if (data_ < data) {
-                if (left->contains(data_)) {
-                    return true;
-                }
+            if (left != nullptr && data_ < data) {
+                return (left->contains(data_));
             }
-            if (data_ > data) {
-                if (right->contains(data_)) {
-                    return true;
-                }
+            if (right != nullptr && data_ > data) {
+                return (right->contains(data_));
             }
             return false;
         }
 
         void pre_order(ArrayList<T>& v) const {
             v.push_back(data);
-            left->pre_order(v);
-            right->pre_order(v);
+            if (left != nullptr) {
+                left->pre_order(v);
+            }
+            if (right != nullptr) {
+                right->pre_order(v);
+            }
         }
         void in_order(ArrayList<T>& v) const {
-            left->in_order(v);
+            if (left != nullptr) {
+                left->in_order(v);
+            }
             v.push_back(data);
-            right->in_order(v);
+            if (right != nullptr) {
+                right->in_order(v);
+            }
         }
 
         void post_order(ArrayList<T>& v) const {
-            left->post_order(v);
-            right->post_order(v);
+            if (left != nullptr) {
+                left->post_order(v);
+            }
+            if (right != nullptr) {
+                right->post_order(v);
+            }
             v.push_back(data);
         }
     };
