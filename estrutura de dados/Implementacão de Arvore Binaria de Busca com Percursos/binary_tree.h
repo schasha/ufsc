@@ -38,89 +38,77 @@ class BinaryTree {
             if (data_ < data) {
                 if (left == nullptr) {
                     left = new Node(data_);
-                } else {
+                } else
                     left->insert(data_);
-                }
             }
             if (data_ > data) {
                 if (right == nullptr) {
                     right = new Node(data_);
-                } else {
+                } else 
                     right->insert(data_);
-                }
             }
         }
-        bool remove(const T& data_) {
+
+        Node* remove(const T& data_) {
+            if (left != nullptr && data_ < data)
+                left = left->remove(data_);
+            if (right != nullptr && data_ > data)
+                right = right->remove(data_);
+
             if (data_ == data) {
-                if (left != nullptr && right != nullptr) {
-                    Node *n = right;
-                    while (n->left != nullptr) {
-                        n = n->left;
-                    }
-                    data = n->data;
-                    return right->remove(data);
+                if (left == nullptr && right == nullptr) {
+                    delete this;
+                    return nullptr;
 
-                } else if (right != nullptr) {
-                    data = right->data;
-                    return right->remove(data);
-
-                } else if (left != nullptr) {
-                    data = left->data;
-                    return left->remove(data);
+                } else if (right == nullptr) {
+                    return left;
+                } else if (left == nullptr) {
+                    return right;
 
                 } else {
-                    delete this;
-                    return true;
+                    Node* n = right;
+                    while (n->left != nullptr)
+                        n = n->left;
+                    data = n->data;
+                    right = right->remove(data);
                 }
             }
-            if (left != nullptr && data_ < data) {
-                return left->remove(data_);
-            }
-            if (right != nullptr && data_ < data) {
-                return left->remove(data_);
-            }
-            return false;
+
+            return this;
         }
 
         bool contains(const T& data_) const {
-            if (data_ == data) {
+            if (data_ == data)
                 return true;
-            }
-            if (left != nullptr && data_ < data) {
+
+            if (left != nullptr && data_ < data)
                 return (left->contains(data_));
-            }
-            if (right != nullptr && data_ > data) {
+            if (right != nullptr && data_ > data)
                 return (right->contains(data_));
-            }
+
             return false;
         }
 
         void pre_order(ArrayList<T>& v) const {
             v.push_back(data);
-            if (left != nullptr) {
+            if (left != nullptr)
                 left->pre_order(v);
-            }
-            if (right != nullptr) {
+            if (right != nullptr)
                 right->pre_order(v);
-            }
         }
         void in_order(ArrayList<T>& v) const {
-            if (left != nullptr) {
+            if (left != nullptr)
                 left->in_order(v);
-            }
             v.push_back(data);
-            if (right != nullptr) {
+            if (right != nullptr)
                 right->in_order(v);
-            }
         }
 
         void post_order(ArrayList<T>& v) const {
-            if (left != nullptr) {
+            if (left != nullptr)
                 left->post_order(v);
-            }
-            if (right != nullptr) {
+            if (right != nullptr)
                 right->post_order(v);
-            }
             v.push_back(data);
         }
     };
@@ -131,6 +119,8 @@ class BinaryTree {
 
 template<typename T>
 BinaryTree<T>::~BinaryTree() {
+    while (!empty())
+        remove(root->data);
 }
 
 template<typename T>
@@ -141,7 +131,7 @@ void BinaryTree<T>::insert(const T& data) {
 }
 
 template<typename T>
-void BinaryTree<T>::remove(const T& data) { // errado
+void BinaryTree<T>::remove(const T& data) {
     if (empty()) throw std::out_of_range("lista vazia");
     root->remove(data);
     size_--;
