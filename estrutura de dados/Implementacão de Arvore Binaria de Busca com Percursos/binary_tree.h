@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include "array_list.h"
 
+
 namespace structures {
 
 template<typename T>
@@ -61,9 +62,13 @@ class BinaryTree {
                     return nullptr;
 
                 } else if (right == nullptr) {
-                    return left;
+                    Node* n = left;
+                    delete this;
+                    return n;
                 } else if (left == nullptr) {
-                    return right;
+                    Node* n = right;
+                    delete this;
+                    return n;
 
                 } else {
                     Node* n = right;
@@ -126,14 +131,14 @@ BinaryTree<T>::~BinaryTree() {
 template<typename T>
 void BinaryTree<T>::insert(const T& data) {
     if (empty()) root = new Node(data);
-    root->insert(data);
+    else root->insert(data);
     size_++;
 }
 
 template<typename T>
 void BinaryTree<T>::remove(const T& data) {
     if (empty()) throw std::out_of_range("lista vazia");
-    root->remove(data);
+    root = root->remove(data);
     size_--;
 }
 
@@ -155,26 +160,26 @@ std::size_t BinaryTree<T>::size() const {
 
 template<typename T>
 ArrayList<T> BinaryTree<T>::pre_order() const {
-    ArrayList<T>* data = new ArrayList<T>(size_);
-    root->pre_order(*data);    
-    return *data;
+    ArrayList<T> data = ArrayList<T>(size_);
+    root->pre_order(data);
+    return data;
 }
 
 template<typename T>
 ArrayList<T> BinaryTree<T>::in_order() const {
-    ArrayList<T>* data = new ArrayList<T>(size_);
-    root->in_order(*data);    
-    return *data;
+    ArrayList<T> data = ArrayList<T>(size_);
+    root->in_order(data);
+    return data;
 }
 
 template<typename T>
 ArrayList<T> BinaryTree<T>::post_order() const {
-    ArrayList<T>* data = new ArrayList<T>(size_);
-    root->post_order(*data);    
-    return *data;
+    ArrayList<T> data = ArrayList<T>(size_);
+    root->post_order(data);
+    return data;
 }
 
-} //  namespace structures
+}  // namespace structures
 
 #endif
 
