@@ -10,18 +10,16 @@ bool parser(std::string xml) {
     stack<string> tag_stack; 
     vector<string> tags;
 
-    //  builds tag vector
+    // builds tag vector
     string tag = "";
     bool in_tag = false;
 
     for (int i = 0; i < xml_len; i++) {
-        if (xml[i] == '<') {
+        if (xml[i] == '<')
             in_tag = true;
-        }
 
-        if (in_tag) {
+        if (in_tag)
             tag.push_back(xml[i]);
-        }
 
         if (xml[i] == '>') {
             in_tag = false;
@@ -30,7 +28,7 @@ bool parser(std::string xml) {
             }
     }
 
-    //  check the tags validity with a stack
+    // check the tags validity with a stack
     int tags_size = tags.size();
 
     for (int i = 0; i < tags_size; i++) {
@@ -44,11 +42,10 @@ bool parser(std::string xml) {
         if (tag[1] == '/') {
             string top_tag = tag_stack.top();
             top_tag.insert(1, "/");
-            if (top_tag == tag) {
+            if (top_tag == tag)
                 tag_stack.pop();
-            } else {
+            else
                 return false;
-            }
             continue;
         }
         tag_stack.push(tag);

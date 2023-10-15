@@ -6,7 +6,7 @@ CXX := g++
 CXXFLAGS := -std=c++11 -Wall
 
 # Source files
-SRCS := main.cpp parser.cpp
+SRCS := main.cpp parser.cpp getTagContent.cpp vacuumArea.cpp
 
 # Object files
 OBJS := $(SRCS:.cpp=.o)
@@ -23,7 +23,7 @@ $(TARGET): $(OBJS)
 
 # Compilation step
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -g -c -o $@ $<
 
 # Clean up generated files
 clean:
