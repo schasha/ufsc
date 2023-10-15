@@ -61,5 +61,13 @@ int vacuumArea(std::string str_matrix, int m, int n, int x, int y) {
         }
     }
 
+    // dynamic matrixes delete
+    for (int i = 0; i < m; i++){
+        delete space[i];
+        delete visited[i];
+    }
+    delete space;
+    delete visited;
+
     return area;
 }
