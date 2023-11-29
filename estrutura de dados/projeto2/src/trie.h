@@ -25,7 +25,7 @@ class Trie {
         bool isEndOfWord{false};
         int pos;
         int len;
-        int sufixes = 0;
+        int suffixes = 0;
     };
 
     void destructorAux(Node* node) {
@@ -62,7 +62,7 @@ void Trie::insert(std::string data, int pos, int len) {
                 p->children[index] = new Node(pos, len);
 
         p = p->children[index];
-        p->sufixes++;
+        p->suffixes++;
     }
 
     p->isEndOfWord = true;
@@ -84,7 +84,7 @@ int* Trie::search(std::string data) {
     return_val[0] = (static_cast<int>(data.length()) != count) ? 0 : static_cast<int>(p->isEndOfWord);
     return_val[1] = p->pos;
     return_val[2] = p->len;
-    return_val[3] = (static_cast<int>(data.length()) != count) ? 0 : p->sufixes;
+    return_val[3] = (static_cast<int>(data.length()) != count) ? 0 : p->suffixes;
 
     return return_val;
 }

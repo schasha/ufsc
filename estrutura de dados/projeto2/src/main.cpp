@@ -61,17 +61,17 @@ int main() {
         int found = searchResult[0];
         int pos = searchResult[1];
         int len = searchResult[2];
-        int sufixes = searchResult[3];
+        int suffixes = searchResult[3];
 
         if (found) {
-            if (sufixes)
-                cout << word << " is prefix of " << sufixes << " words" << "\n";
+            if (suffixes)
+                cout << word << " is prefix of " << suffixes << " words" << "\n";
             else 
                 cout << word << " is prefix of 1 words" << "\n";
             cout << word << " is at " << "(" << pos << "," << len << ")" << "\n";
         } else {
-            if (sufixes)
-                cout << word << " is prefix of " << sufixes << " words" << "\n";
+            if (suffixes)
+                cout << word << " is prefix of " << suffixes << " words" << "\n";
             else 
                 cout << word << " is not prefix" << "\n";
         }
