@@ -55,6 +55,10 @@ class Grafo {
         delete matriz;
     }
 
+    float** getMatrix() {
+        return matriz;
+    }
+
     size_t qtdVertices() {
         return n_vertices;
     }
