@@ -40,10 +40,18 @@ void ex2() {
     }
 }
 
+void ex3() {
+    vector<int> ciclo = hierholtzer("ContemCicloEuleriano2.net", 1);
+    if (!ciclo.empty()) cout << 1 << '\n';
+    else                cout << 0 << '\n';
+    for (int v : ciclo) cout << v << ' ';
+    cout << '\n';
+}
+
 int main() {
     //ex1();
     //ex2();
-    vector<int> ciclo = hierholtzer("facebook_santiago.net", 1);
+    ex3();
 }
 
 vector<int> bfs(string arquivo_grafo, int vertice) {
@@ -90,26 +98,28 @@ vector<int> getSubciclo(Grafo &grafo, int vertice, vector<vector<bool>> &visitad
         for (int i = 0; i < grafo.qtdVertices(); i++)
             if (!visitados[v][i]) u = i;
         visitados[v][u] = true;
+        visitados[u][v] = true;
         v = u;
         ciclo.push_back(v);
         if (v == inicio) break;
     }
 
-    for (int a : ciclo) {
+    for (int i = 0; i < ciclo.size(); i++) {
         bool flag = true;
-        for (int i = 0; i < grafo.qtdVertices(); i++)
-            if (!visitados[a][i]) flag = false;
+        for (int j = 0; j < grafo.qtdVertices(); j++) {
+            if (!visitados[ciclo[i]][j]) flag = false;
+        }
         if (flag) continue;
 
-        vector<int> ciclo_linha = getSubciclo(grafo, a+1, visitados);
+        vector<int> ciclo_linha = getSubciclo(grafo, ciclo[i]+1, visitados);
         if (ciclo_linha.empty()) {
             ciclo.clear();
             break;
         }
-        for (int c : ciclo_linha)
-            for (int d : ciclo) 
-                if (c == d)
-                    ciclo.insert(find(ciclo.begin(), ciclo.end(), c), ciclo_linha.begin(), ciclo_linha.end());
+
+        auto it = find(ciclo.begin(), ciclo.end(), ciclo_linha.at(0));
+        if (it != ciclo.end())
+            ciclo.insert(it, ciclo_linha.begin(), ciclo_linha.end()-1);
     }
     return ciclo; 
 }
@@ -131,6 +141,9 @@ vector<int> hierholtzer(string arquivo_grafo, int vertice) {
         for (int j = 0; j < vertices; j++)
             if (!visitados[i][j]) flag = true;
     if (flag) ciclo.clear();
+
+    for (int &v : ciclo)
+        v++; 
 
     return ciclo;
 }
