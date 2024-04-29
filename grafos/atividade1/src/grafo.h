@@ -36,7 +36,7 @@ class Grafo {
 
         matriz = new float*[n_vertices];
         for (size_t i = 0; i < n_vertices; i++)
-            matriz[i] = new float[n_vertices];
+            matriz[i] = new float[n_vertices]();
 
         n_arestas = 0;
         int a, b; float p;
