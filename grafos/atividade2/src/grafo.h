@@ -15,7 +15,7 @@ class Grafo {
 
  public:
     //ler arquivo
-    Grafo(string filename) {
+    Grafo(string filename, int tipo) { //0 = nao-dirigido ; 1 = dirigido
         string s;
         ifstream file;
         file.open(filename);
@@ -43,7 +43,8 @@ class Grafo {
         while (file >> a >> b >> p) {
             a--; b--;
             matriz[a][b] = p;
-            matriz[b][a] = p;
+            if (!tipo)
+                matriz[b][a] = p;
             n_arestas++; 
         }
         file.close();
